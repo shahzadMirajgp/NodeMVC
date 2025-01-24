@@ -1,31 +1,32 @@
-const express = require('express');
-const routes = require('./controllers');
-const sequelize = require('./config/connection');
-const path = require('path');
+import express from "express";
+import routes from "./controllers/index.js";
+import sequelize from "./config/connection.js";
+import path from "path";
 
-const helpers = require('./utils/helpers');
+import * as helpers from "./utils/helpers.js"; // Import helpers
 
-const exphbs = require('express-handlebars');
+import exphbs from "express-handlebars";
 const hbs = exphbs.create({ helpers });
 
-const session = require('express-session');
+import session from "express-session";
+import connectSessionSequelize from "connect-session-sequelize"; // Default import
+
+const SequelizeStore = connectSessionSequelize(session.Store); // Create SequelizeStore using session.Store
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
-
 const sess = {
-  secret: 'bigbluedog',
+  secret: "bigbluedog",
   cookie: {
-        // Session will automatically expire in 10 minutes
-        expires: 10 * 60 * 1000
+    // Session will automatically expire in 10 minutes
+    expires: 10 * 60 * 1000,
   },
   resave: true,
   rolling: true,
   saveUninitialized: true,
   store: new SequelizeStore({
-    db: sequelize
+    db: sequelize, // Pass sequelize instance
   }),
 };
 
@@ -33,14 +34,16 @@ app.use(session(sess));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, "public")));
 
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
+app.engine("handlebars", hbs.engine);
+app.set("view engine", "handlebars");
 
 app.use(routes);
 
-// turn on connection to db and server
+// Turn on connection to DB and server
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log('Now listening on http://localhost:3001/'));
+  app.listen(PORT, () =>
+    console.log("Now listening on http://localhost:3001/")
+  );
 });
