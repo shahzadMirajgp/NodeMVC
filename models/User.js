@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 class User extends Model {
   // This sets up a method to use on the user model to check for correct password
   checkPassword(loginPw) {
-    return bcrypt.compareSync(loginPw, this.password);
+    return loginPw == this.password; //bcrypt.compareSync(loginPw, this.password);
   }
 }
 
