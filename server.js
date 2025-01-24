@@ -10,8 +10,12 @@ const hbs = exphbs.create({ helpers });
 
 import session from "express-session";
 import connectSessionSequelize from "connect-session-sequelize"; // Default import
-
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const SequelizeStore = connectSessionSequelize(session.Store); // Create SequelizeStore using session.Store
+// Set up static path
+const staticPath = path.join(__dirname, "public");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -31,10 +35,9 @@ const sess = {
 };
 
 app.use(session(sess));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static(staticPath));
 
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
@@ -44,6 +47,6 @@ app.use(routes);
 // Turn on connection to DB and server
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () =>
-    console.log("Now listening on http://localhost:3001/")
+    console.log(`Now listening on http://localhost:${PORT}/`)
   );
 });
