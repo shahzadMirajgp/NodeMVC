@@ -1,4 +1,4 @@
-import { User } from "../models.js";
+import { User } from "../models/index.js";
 
 const userData = [
   {

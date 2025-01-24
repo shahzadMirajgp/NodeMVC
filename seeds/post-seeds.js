@@ -1,4 +1,4 @@
-import { Post } from "../models.js";
+import { Post } from "../models/index.js";
 
 const postData = [
   {

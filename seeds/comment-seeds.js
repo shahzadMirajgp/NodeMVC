@@ -1,4 +1,4 @@
-import { Comment } from "../models.js";
+import { Comment } from "../models/index.js";
 
 const commentData = [
   {
